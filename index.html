@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detection</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Card container */
+        .box {
+            background: #fff;
+            padding: 30px 25px;
+            width: 100%;
+            max-width: 700px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Heading */
+        .box h2 {
+            margin-bottom: 20px;
+            color: #cd0303;
+        }
+
+        /* Textarea styling */
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        /* Button styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.03);
+        }
+
+        /* Result box */
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .box {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Fake News Detection</h2>
+    <textarea id="newsText" placeholder="Enter news here..."></textarea>
+    <button onclick="checkNews()">Check</button>
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+async function checkNews() {
+    const text = document.getElementById("newsText").value;
+
+    const response = await fetch("/predict", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({text})
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+        document.getElementById("result").innerText = data.error;
+        return;
+    }
+
+    document.getElementById("result").innerHTML =
+        `<b>${data.label}</b> (Probability: ${data.probability})`;
+}
+</script>
+
+</body>
+</html>
